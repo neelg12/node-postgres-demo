@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      context: .
+    environment:
+      DATABASE_URL: postgres://appuser:${SERVICE_PASSWORD_DB}@db:5432/appdb
+      PORT: "3000"
+      DOMAIN: ${SERVICE_FQDN_APP_3000}
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: ${SERVICE_PASSWORD_DB}
+      POSTGRES_DB: appdb
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  db-data:
